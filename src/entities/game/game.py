@@ -1,6 +1,8 @@
-import pygame
-import params
 import sys
+
+import pygame
+
+import params
 
 
 class Game:
