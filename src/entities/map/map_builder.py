@@ -1,16 +1,5 @@
 import pygame
-
-
-class Sprite(pygame.sprite.Sprite):
-    def __init__(self, position_x, position_y, width, height, image_asset):
-        pygame.sprite.Sprite.__init__(self)
-        self.position_x = position_x
-        self.position_y = position_y
-        self.image = pygame.image.load(image_asset)
-        self.rect = pygame.Rect(position_x, position_y, width, height)
-
-    def build(self, window):
-        window.blit(self.image, (self.rect.x, self.rect.y))
+from common.objects import Sprite
 
 
 # class SolidSprite(Sprite):
@@ -34,13 +23,16 @@ class Map:
 class MapBuilder:
     def __init__(self, window):
         self.map_name = None
+        self.map = None
         self.window = window
 
     def check_current_map(self, current_map_name):
         if current_map_name != self.map_name:
             self.change_map(new_map_name=current_map_name)
+        else:
+            self.map.build()
 
     def change_map(self, new_map_name):
-        new_map = Map(window=self.window)
-        new_map.build()
+        self.map = Map(window=self.window)
+        self.map.build()
         self.map_name = new_map_name
