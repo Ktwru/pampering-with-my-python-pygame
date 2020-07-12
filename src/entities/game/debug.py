@@ -1,43 +1,60 @@
-import pygame
 import params
 from common.objects import Font
 
 
 class Debugger:
-    def __init__(self, window):
+    def __init__(self, window, game_globals):
         self.window = window
         self.position_x = params.DEBUG_POSITION[0]
         self.position_y = params.DEBUG_POSITION[1]
-        self.input = Font(text='input:', position_x=self.position_x, position_y=self.position_y+16, size=16)
+        self.game_globals = game_globals
+
         self.input_active = False
+        self.input = Font(text='input:', position_x=self.position_x, position_y=self.position_y+16, size=16)
+        self.input_value = Font(text='', position_x=self.position_x+40, position_y=self.position_y+16, size=16)
+
         self.map_name = Font(text='map:', position_x=self.position_x, position_y=self.position_y+32, size=16)
+
         self.buttons = Font(text='buttons:', position_x=self.position_x-600, position_y=self.position_y, size=14)
 
-    def watch(self, events, game_globals):
+    def watch(self, events):
         button_events = events.get('button')
         if button_events:
             self.perform_buttons(button_events)
-            self.perform_input(button_events=button_events, game_globals=game_globals)
-        self.perform_map(game_globals.map_name)
+            self.perform_input(button_events)
+        self.perform_map()
         self.buttons.build(self.window)
         self.input.build(self.window)
+        self.input_value.build(self.window)
         self.map_name.build(self.window)
 
     def perform_buttons(self, button_events):
         self.buttons.text = 'buttons:' + ','.join(button_events.keys())
 
-    def perform_input(self, button_events, game_globals):
-        if button_events.get('`'):
+    def perform_input(self, button_events):
+        if button_events.get('96d'):
             if self.input_active:
-                self.input.text = 'input:'
+                self.input_value.text = ''
             else:
-                self.input.text = 'input!:'
+                self.input_value.text = '!'
             self.input_active = not self.input_active
+            return
+        # 8,13
         if self.input_active:
-            if button_events.get('m'):
-                self.input.text = 'input!:m'
-                game_globals.map_name = 'another_map'
-                return
+            if button_events.get('8d'):
+                self.input_value.text = '!'
+            elif button_events.get('13d'):
+                self.execute_command()
+            else:
+                event = list(button_events.values())[0]
+                if hasattr(event, 'unicode'):
+                    self.input_value.text += event.unicode
 
-    def perform_map(self, map_name):
-        self.map_name.text = 'map:' + map_name
+    def execute_command(self):
+        if 'setmap:' in self.input_value.text:
+            map_name = self.input_value.text.split(':')[1]
+            self.game_globals.map_name = map_name
+            return
+
+    def perform_map(self):
+        self.map_name.text = 'map:' + self.game_globals.map_name

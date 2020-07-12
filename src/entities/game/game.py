@@ -14,9 +14,11 @@ class Game:
         self.window = self.build_window()
         self.event_listener = EventListener()
         self.map_builder = MapBuilder(window=self.window)
-        self.debugger = Debugger(window=self.window)
 
         self.globals = Globals(map_name='mppp', debug_mode=params.DEBUG_MODE)
+        self.state = {}
+
+        self.debugger = Debugger(window=self.window, game_globals=self.globals)
 
     def build_window(self):
         window = pygame.display.set_mode(size=(params.WINDOW_HEIGHT, params.WINDOW_WIDTH))
@@ -31,7 +33,7 @@ class Game:
         self.map_builder.check_current_map(current_map_name=self.globals.map_name)
 
         if self.globals.debug_mode:
-            self.debugger.watch(events=events, game_globals=self.globals)
+            self.debugger.watch(events=events)
 
         pygame.display.update()
         pygame.time.delay(params.TIME_DELAY)
@@ -45,20 +47,16 @@ class EventListener:
             if event.type == pygame.QUIT:
                 self.quit()
             elif event.type == 2:    # todo - writing only 2:keyUp and 3:keyDown
-                events_dict['button'][event.unicode] = event
+                events_dict['button'][str(event.key)+'d'] = event
             elif event.type == 3:
-                events_dict['button'][str(event.key)] = event
+                events_dict['button'][str(event.key)+'u'] = event
             else:
                 events_dict['other'].append(event)
         return events_dict
 
     def quit(self):
         pygame.quit()
-    def handle_event(self, event):
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        ...
+        sys.exit()
 
 
 @dataclass
