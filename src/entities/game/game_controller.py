@@ -1,4 +1,4 @@
-from common.objects import Sprite
+from common.objects import Sprite, AnimatedSprite
 
 
 class GameController:
@@ -19,12 +19,14 @@ class GameController:
                     layer.remove(game_object)
             self.game_globals.should_remove_colored_sprites = False
         if self.game_globals.should_make_colored_sprites:
-            self.game_objects.first_layer.append(Sprite(
+            self.game_objects.first_layer.append(AnimatedSprite(
                 position_x=100,
                 position_y=180,
                 width=64,
                 height=64,
-                image_asset='assets/bad-fire-sprite.png',
+                animation_asset='bad-fire',
+                frames_num=3,
+                speed=4,
             ))
             self.game_objects.second_layer.append(Sprite(
                 position_x=20,

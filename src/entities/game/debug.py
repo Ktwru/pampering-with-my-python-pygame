@@ -13,11 +13,8 @@ class Debugger:
         self.input_active = False
         self.input = Font(text='input:', position_x=self.position_x-600, position_y=self.position_y+16, size=16)
         self.input_value = Font(text='', position_x=self.position_x-560, position_y=self.position_y+16, size=16)
-
         self.map_name = Font(text='map:', position_x=self.position_x, position_y=self.position_y+32, size=16)
-
         self.fps = Font(text='fps:', position_x=self.position_x, position_y=self.position_y+48, size=16)
-
         self.buttons = Font(text='buttons:', position_x=self.position_x-600, position_y=self.position_y, size=14)
 
     def watch(self, events):
@@ -45,7 +42,6 @@ class Debugger:
                 self.input_value.text = '!'
             self.input_active = not self.input_active
             return
-        # 8,13
         if self.input_active:
             if button_events.get('8d'):
                 self.input_value.text = '!'
