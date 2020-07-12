@@ -60,6 +60,7 @@ class Debugger:
             elif cmd[2] == 'true':
                 cmd[2] = True
             setattr(self.game_globals, cmd[1], cmd[2])
+            self.input_value.text = '!'
 
     def perform_map(self):
         self.map_name.text = 'map:' + self.game_globals.map_name

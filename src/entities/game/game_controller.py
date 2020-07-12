@@ -1,4 +1,5 @@
 from common.objects import Sprite, AnimatedSprite
+from entities.game_objects.cat import Cat
 
 
 class GameController:
@@ -6,7 +7,13 @@ class GameController:
         self.game_globals = game_globals
         self.game_objects = game_objects
 
-    def process(self):
+    def process(self, buttons_events):
+        for game_object in self.game_objects.third_layer:
+            if hasattr(game_object, 'process'):
+                game_object.process(buttons_events)
+        if self.game_globals.spawn_cat:
+            self.game_objects.third_layer.append(Cat())
+            self.game_globals.spawn_cat = False
         if self.game_globals.should_remove_colored_sprites:
             for layer in [
                 self.game_objects.first_layer,

@@ -44,7 +44,7 @@ class Game:
 
         events = self.event_listener.check_for_events()
 
-        self.game_controller.process()
+        self.game_controller.process(buttons_events=events.get('button'))
 
         self.game_objects.build_all(self.window)
 
@@ -82,6 +82,7 @@ class Globals:
     debug_mode: bool = False
     should_make_colored_sprites: bool = False
     should_remove_colored_sprites: bool = False
+    spawn_cat: bool = False
 
 
 @dataclass
