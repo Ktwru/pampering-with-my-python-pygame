@@ -1,5 +1,5 @@
 import params
-from common.objects import Font
+from common.objects import Font, Sprite
 
 
 class Debugger:
@@ -10,6 +10,7 @@ class Debugger:
         self.position_y = params.DEBUG_POSITION[1]
         self.game_globals = game_globals
 
+        self.should_execute_in_next_tick = False
         self.input_active = False
         self.input = Font(text='input:', position_x=self.position_x-600, position_y=self.position_y+16, size=16)
         self.input_value = Font(text='', position_x=self.position_x-560, position_y=self.position_y+16, size=16)
@@ -19,7 +20,7 @@ class Debugger:
 
     def watch(self, events):
         button_events = events.get('button')
-        if button_events:
+        if button_events or self.should_execute_in_next_tick:
             self.perform_buttons(button_events)
             self.perform_input(button_events)
         self.perform_map()
@@ -45,7 +46,7 @@ class Debugger:
         if self.input_active:
             if button_events.get('8d'):
                 self.input_value.text = '!'
-            elif button_events.get('13d'):
+            elif button_events.get('13d') or self.should_execute_in_next_tick:
                 self.execute_command()
             else:
                 event = list(button_events.values())[0]
@@ -53,7 +54,7 @@ class Debugger:
                     self.input_value.text += event.unicode
 
     def execute_command(self):
-        if 'globals:' in self.input_value.text:     # globals:map_name:another_map
+        if 'globals:' in self.input_value.text:     # globals:var_name:var_value
             cmd = self.input_value.text.split(':')
             if cmd[2] == 'false':
                 cmd[2] = False
@@ -61,6 +62,31 @@ class Debugger:
                 cmd[2] = True
             setattr(self.game_globals, cmd[1], cmd[2])
             self.input_value.text = '!'
+        elif 'test_computations:' in self.input_value.text:     # test_computations:val1:val2:iterations:ticks
+            self.should_execute_in_next_tick = True
+            cmd = self.input_value.text.split(':')
+            tick = int(cmd[4])
+            if tick == 0:
+                self.input_value.text = '!'
+                self.should_execute_in_next_tick = False
+            else:
+                val1 = int(cmd[1])
+                val2 = int(cmd[2])
+                for iteration in range(int(cmd[3])):
+                    val1 += val2
+                self.input_value.text = f'{cmd[0]}:{cmd[1]}:{cmd[2]}:{cmd[3]}:{tick-1}'
+        elif 'test_sprite_builds:' in self.input_value.text:    # test_sprite_builds:sprite_asset:iterations:ticks
+            self.should_execute_in_next_tick = True
+            cmd = self.input_value.text.split(':')
+            tick = int(cmd[3])
+            if tick == 0:
+                self.input_value.text = '!'
+                self.should_execute_in_next_tick = False
+            else:
+                for iteration in range(int(cmd[2])):
+                    sprite = Sprite(250, 250, 10, 10, cmd[1])
+                    sprite.build(self.window)
+                self.input_value.text = f'{cmd[0]}:{cmd[1]}:{cmd[2]}:{tick-1}'
 
     def perform_map(self):
         self.map_name.text = 'map:' + self.game_globals.map_name
