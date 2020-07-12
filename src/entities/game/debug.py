@@ -28,13 +28,16 @@ class Debugger:
 
     def perform_input(self, button_events, game_globals):
         if button_events.get('`'):
+            if self.input_active:
+                self.input.text = 'input:'
+            else:
+                self.input.text = 'input!:'
             self.input_active = not self.input_active
         if self.input_active:
             if button_events.get('m'):
                 self.input.text = 'input!:m'
                 game_globals.map_name = 'another_map'
-            else:
-                self.input.text = 'input!:'
+                return
 
     def perform_map(self, map_name):
         self.map_name.text = 'map:' + map_name
