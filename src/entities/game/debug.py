@@ -11,8 +11,8 @@ class Debugger:
         self.game_globals = game_globals
 
         self.input_active = False
-        self.input = Font(text='input:', position_x=self.position_x, position_y=self.position_y+16, size=16)
-        self.input_value = Font(text='', position_x=self.position_x+40, position_y=self.position_y+16, size=16)
+        self.input = Font(text='input:', position_x=self.position_x-600, position_y=self.position_y+16, size=16)
+        self.input_value = Font(text='', position_x=self.position_x-560, position_y=self.position_y+16, size=16)
 
         self.map_name = Font(text='map:', position_x=self.position_x, position_y=self.position_y+32, size=16)
 
@@ -57,10 +57,13 @@ class Debugger:
                     self.input_value.text += event.unicode
 
     def execute_command(self):
-        if 'setmap:' in self.input_value.text:
-            map_name = self.input_value.text.split(':')[1]
-            self.game_globals.map_name = map_name
-            return
+        if 'globals:' in self.input_value.text:     # globals:map_name:another_map
+            cmd = self.input_value.text.split(':')
+            if cmd[2] == 'false':
+                cmd[2] = False
+            elif cmd[2] == 'true':
+                cmd[2] = True
+            setattr(self.game_globals, cmd[1], cmd[2])
 
     def perform_map(self):
         self.map_name.text = 'map:' + self.game_globals.map_name

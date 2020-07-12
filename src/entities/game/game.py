@@ -4,9 +4,8 @@ import pygame
 
 import params
 from dataclasses import dataclass
-from entities.map.map_builder import MapBuilder
 from entities.game.debug import Debugger
-from entities.game.game_objects_creator import GameObjectsCreator
+from entities.game.game_controller import GameController
 
 
 class Game:
@@ -16,7 +15,6 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.event_listener = EventListener()
-        self.map_builder = MapBuilder(window=self.window)
 
         self.globals = Globals(
             map_name='mppp',
@@ -31,7 +29,7 @@ class Game:
             fifth_layer=[],
         )
 
-        self.game_objects_creator = GameObjectsCreator(game_globals=self.globals, game_objects=self.game_objects)
+        self.game_controller = GameController(game_globals=self.globals, game_objects=self.game_objects)
 
         self.debugger = Debugger(window=self.window, game_globals=self.globals, clock=self.clock)
 
@@ -45,9 +43,8 @@ class Game:
         self.window.fill((0, 0, 0))  # todo
 
         events = self.event_listener.check_for_events()
-        self.map_builder.check_current_map(current_map_name=self.globals.map_name)
 
-        self.game_objects_creator.check_objects_for_create()
+        self.game_controller.process()
 
         self.game_objects.build_all(self.window)
 
@@ -84,6 +81,7 @@ class Globals:
     map_name: str = None
     debug_mode: bool = False
     should_make_colored_sprites: bool = False
+    should_remove_colored_sprites: bool = False
 
 
 @dataclass
