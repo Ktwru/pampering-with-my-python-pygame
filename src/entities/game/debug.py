@@ -3,8 +3,9 @@ from common.objects import Font
 
 
 class Debugger:
-    def __init__(self, window, game_globals):
+    def __init__(self, window, game_globals, clock):
         self.window = window
+        self.clock = clock
         self.position_x = params.DEBUG_POSITION[0]
         self.position_y = params.DEBUG_POSITION[1]
         self.game_globals = game_globals
@@ -15,6 +16,8 @@ class Debugger:
 
         self.map_name = Font(text='map:', position_x=self.position_x, position_y=self.position_y+32, size=16)
 
+        self.fps = Font(text='fps:', position_x=self.position_x, position_y=self.position_y+48, size=16)
+
         self.buttons = Font(text='buttons:', position_x=self.position_x-600, position_y=self.position_y, size=14)
 
     def watch(self, events):
@@ -23,10 +26,13 @@ class Debugger:
             self.perform_buttons(button_events)
             self.perform_input(button_events)
         self.perform_map()
+        self.perform_fps()
+
         self.buttons.build(self.window)
         self.input.build(self.window)
         self.input_value.build(self.window)
         self.map_name.build(self.window)
+        self.fps.build(self.window)
 
     def perform_buttons(self, button_events):
         self.buttons.text = 'buttons:' + ','.join(button_events.keys())
@@ -58,3 +64,6 @@ class Debugger:
 
     def perform_map(self):
         self.map_name.text = 'map:' + self.game_globals.map_name
+
+    def perform_fps(self):
+        self.fps.text = 'fps:' + str(int(self.clock.get_fps()))
