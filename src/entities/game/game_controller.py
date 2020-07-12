@@ -8,6 +8,20 @@ class GameController:
         self.game_objects = game_objects
 
     def process(self, buttons_events):
+        if self.game_globals.map_name != self.game_globals.current_map_name:
+            self.game_objects.fifth_layer.append(Sprite(
+                0, 0, 10, 10, f'assets/sprites/maps/{self.game_globals.map_name}/layer-5.png')
+            )
+            self.game_objects.fourth_layer.append(Sprite(
+                0, 0, 10, 10, f'assets/sprites/maps/{self.game_globals.map_name}/layer-4.png')
+            )
+            self.game_objects.third_layer.append(Sprite(
+                0, 0, 10, 10, f'assets/sprites/maps/{self.game_globals.map_name}/layer-3.png')
+            )
+            self.game_objects.second_layer.append(Sprite(
+                0, 0, 10, 10, f'assets/sprites/maps/{self.game_globals.map_name}/layer-2.png')
+            )
+            self.game_globals.current_map_name = self.game_globals.map_name
         for game_object in self.game_objects.third_layer:
             if hasattr(game_object, 'process'):
                 game_object.process(buttons_events)

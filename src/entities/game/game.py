@@ -17,7 +17,6 @@ class Game:
         self.event_listener = EventListener()
 
         self.globals = Globals(
-            map_name='mppp',
             debug_mode=params.DEBUG_MODE,
             should_make_colored_sprites=True,
         )
@@ -78,7 +77,9 @@ class EventListener:
 
 @dataclass
 class Globals:
-    map_name: str = None
+    map_name: str = ''
+    current_map_name: str = ''
+
     debug_mode: bool = False
     should_make_colored_sprites: bool = False
     should_remove_colored_sprites: bool = False

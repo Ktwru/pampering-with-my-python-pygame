@@ -4,11 +4,15 @@ import pygame
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, position_x, position_y, width, height, image_asset):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(image_asset)
+        self.image = self.scale_image(image_asset)
         self.rect = pygame.Rect(position_x, position_y, width, height)
 
     def build(self, window):
         window.blit(self.image, (self.rect.x, self.rect.y))
+
+    def scale_image(self, image_asset):
+        image = pygame.image.load(image_asset)
+        return pygame.transform.scale(image, (image.get_width()*4, image.get_height()*4))
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
